@@ -1,0 +1,24 @@
+mixin storageForm(action, method, storage = {}, rooms = [], modalId, qrUuid)
+  form(id="form-addStorage" action=action method=method class="space-y-4")
+    div
+      label(class="block text-sm font-medium text-gray-700") Name
+      input(type="text" name="name" value=storage.name required 
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm")
+    
+    div
+      label(class="block text-sm font-medium text-gray-700") Description
+      textarea(name="description" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm")
+        = storage.description
+    
+    div
+      label(class="block text-sm font-medium text-gray-700") Room
+      select(name="room_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm")
+        option(value="") -- Select Room --
+        each room in rooms
+          option(value=room.id selected=storage.room_id === room.id)= room.name
+    
+    div(class="flex justify-end space-x-3")
+      button(type="button" onclick=`toggleStorageModal('${storage.id ? 'editStorage-'+storage.id : 'addStorage'}')` 
+        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded") Cancel
+      button(type="submit" 
+        class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded") Save

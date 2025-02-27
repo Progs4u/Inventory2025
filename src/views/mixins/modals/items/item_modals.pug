@@ -1,0 +1,84 @@
+
+mixin itemForm(action, method, item, rooms, storages, containers, modalId)
+  - rooms = rooms || []
+  - storages = storages || []
+  - containers = containers || []
+  - item = item || {}
+  - let initialLocationType = item.container_id ? 'container' : (item.storage_id ? 'storage' : (item.room_id ? 'room' : ''))
+  
+  form(action=action method=method class="space-y-4")
+    //- Basic Fields
+    div(class="mb-4")
+      label(class="block text-gray-700 text-sm font-bold mb-2") Name
+      input(type="text" name="name" value=item.name required
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700")
+    
+    //- Category Selection
+    //- Inside itemForm mixin
+    div(class="mb-4")
+      label(class="block text-gray-700 text-sm font-bold mb-2") Category
+      select(name="category" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700")
+        option(value="") Select Category
+        each category in ['electronics', '3d_printing', 'painting', 'cleaning', 'building_materials', 'other']
+          option(value=category selected=item.category === category)= category.replace(/_/g, ' ')
+    //- Description
+    div(class="mb-4")
+      label(class="block text-gray-700 text-sm font-bold mb-2") Description
+      textarea(name="description" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700")= item.description
+
+    //- Location Type Selection
+    div(class="mb-4")
+      label(class="block text-gray-700 text-sm font-bold mb-2") Location Type
+      select(onchange=`updateItemLocationOptions(this.value, '${modalId}')` class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700")
+        option(value="") Select Location Type
+        option(value="room" selected=initialLocationType === 'room') Room
+        option(value="storage" selected=initialLocationType === 'storage') Storage
+        option(value="container" selected=initialLocationType === 'container') Container
+
+    //- Location Fields (Initially Hidden)
+    div(id=`${modalId}-roomSelect` class=initialLocationType === 'room' ? '' : 'hidden')
+      label(class="block text-gray-700 text-sm font-bold mb-2") Room
+      select(name="room_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700")
+        option(value="") Select Room
+        each room in rooms
+          option(value=room.id selected=item.room_id === room.id)= room.name
+
+    div(id=`${modalId}-storageSelect` class=initialLocationType === 'storage' ? '' : 'hidden')
+      label(class="block text-gray-700 text-sm font-bold mb-2") Storage
+      select(name="storage_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700")
+        option(value="") Select Storage
+        each storage in storages
+          option(value=storage.id selected=item.storage_id === storage.id)= storage.name
+
+    div(id=`${modalId}-containerSelect` class=initialLocationType === 'container' ? '' : 'hidden')
+      label(class="block text-gray-700 text-sm font-bold mb-2") Container
+      select(name="container_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700")
+        option(value="") Select Container
+        each container in containers
+          option(value=container.id selected=item.container_id === container.id)= container.name
+    //- Category Selection
+
+
+    //- Common Fields
+    div(class="mb-4")
+      label(class="block text-gray-700 text-sm font-bold mb-2") Quantity
+      input(type="number" name="quantity" value=item.quantity || 1 min="0"
+        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700")
+
+    div(class="flex justify-end space-x-3")
+      button(type="button" onclick=`toggleItemModal('${modalId}')` 
+        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded") Cancel
+      button(type="submit" 
+        class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded") Save
+
+mixin deleteItemModal(item)
+  div(id=`deleteItem-${item.id}` class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center")
+    div(class="bg-white rounded-lg p-6 w-full max-w-md")
+      h2(class="text-xl font-bold mb-4") Delete Item
+      p(class="mb-4") Are you sure you want to delete "#{item.name}"?
+      form(action=`/items/${item.id}?_method=DELETE` method="POST")
+        div(class="flex justify-end space-x-3")
+          button(type="button" onclick=`toggleItemModal('deleteItem-${item.id}')` 
+            class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded") Cancel
+          button(type="submit" 
+            class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded") Delete

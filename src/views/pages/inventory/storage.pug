@@ -1,0 +1,41 @@
+extends ../../layouts/inventory_layout
+include ../../mixins/forms/storages/storage_forms
+include ../../mixins/modals/storages/storage_modals
+include ../../mixins/tables/storages/storage_tables
+
+block content
+  div(class="bg-white rounded-lg shadow-lg p-6 mb-8")
+    div(class="flex justify-between items-center mb-6")
+      h1(class="text-2xl font-bold text-orange-900") Storage Units
+      button(onclick="toggleStorageModal('addStorage')" 
+        class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700") Add Storage
+
+    //- Storage Grid
+    div(class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6")
+      each storage in storages || []
+        div(class="bg-orange-50 rounded-lg p-4")
+          div(class="flex justify-between items-center")
+            h3(class="font-bold text-orange-900")= storage.name
+            div(class="space-x-2")
+              button(onclick=`toggleStorageModal('editStorage-${storage.id}')` 
+                class="text-blue-600 hover:text-blue-900 mr-4") Edit
+              button(onclick=`toggleStorageModal('deleteStorage-${storage.id}')`
+                class="text-red-600 hover:text-red-900") Delete
+          p(class="text-sm text-gray-600")= storage.description
+          p(class="text-sm text-gray-600")= `Room: ${storage.room_name || 'Not assigned'}`
+          p(class="text-sm text-gray-600")= `Total Items: ${storage.total_items || 0}`
+
+  //- Add Storage Modal
+  div(id="addStorage" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center")
+    div(class="bg-white rounded-lg p-6 w-full max-w-md")
+      h2(class="text-xl font-bold text-orange-900 mb-4") Add Storage
+      +storageForm("/storage", "POST", {}, rooms)
+
+  //- Edit/Delete Modals
+  each storage in storages || []
+    +editStorageModal(storage, rooms)
+    +deleteStorageModal(storage)
+
+block scripts
+  script(src="/js/storage_handlers.js")
+

@@ -1,0 +1,44 @@
+extends ../../layouts/inventory_layout
+include ../../mixins/tables/items/item_tables
+include ../../mixins/modals/items/item_modals
+include ../../mixins/forms/items/item_forms
+
+
+block content
+  //- Stats Overview
+  div(class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8")
+    div(class="bg-orange-50 rounded-lg shadow p-6")
+      h3(class="text-orange-900 text-lg font-semibold") Total Items
+      p(class="text-3xl font-bold text-orange-600")= stats ? stats.items_count : 0
+
+    div(class="bg-blue-50 rounded-lg shadow p-6")
+      h3(class="text-blue-900 text-lg font-semibold") Rooms
+      p(class="text-3xl font-bold text-blue-600")= stats ? stats.rooms_count : 0
+
+    div(class="bg-green-50 rounded-lg shadow p-6")
+      h3(class="text-green-900 text-lg font-semibold") Storage Units
+      p(class="text-3xl font-bold text-green-600")= stats ? stats.storage_count : 0
+
+    div(class="bg-purple-50 rounded-lg shadow p-6")
+      h3(class="text-purple-900 text-lg font-semibold") Containers
+      p(class="text-3xl font-bold text-purple-600")= stats ? stats.containers_count : 0
+
+  //- Search Section
+  div(class="bg-white rounded-lg shadow-lg p-6 mb-8")
+    form(onsubmit="handleSearch(event)" class="space-y-4")
+      div(class="flex gap-4")
+        input(type="text" name="query" placeholder="Search items...")
+
+          //- Add other categories
+        button(type="submit") Search
+
+  //- Search Results Section
+  div(class="mt-6" id="searchResults")
+    if searchResults && searchResults.length
+      +itemsTable(searchResults)
+    else if searchQuery
+      p(class="text-center text-gray-500") No items found matching your search.
+
+block scripts
+  script(src="/js/dashboard_handlers.js")
+

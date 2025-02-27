@@ -1,0 +1,14 @@
+# VS Code settings
+.vscode/
+
+# SSL certificates and keys
+ssl/
+
+# Node dependencies
+node_modules/
+
+# Log files
+screenlog.0
+
+# Env file
+.env

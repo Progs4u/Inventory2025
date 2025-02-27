@@ -1,0 +1,30 @@
+mixin qrsTable(qrs)
+  table.min-w-full.bg-white.border.rounded-lg.shadow-sm
+    thead
+      tr.bg-gray-50
+        th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Type
+        th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Name
+        th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Status
+        th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Assigned At
+        th.px-6.py-3.text-left.text-xs.font-medium.text-gray-500.uppercase.tracking-wider Actions
+    tbody
+      each qr in qrs
+        tr(class="border-t hover:bg-gray-50")
+          td.px-6.py-4.whitespace-nowrap
+            if qr.item_id
+              span.text-blue-600 Item
+            else if qr.container_id
+              span.text-green-600 Container
+            else if qr.storage_id
+              span.text-purple-600 Storage
+          td.px-6.py-4.whitespace-nowrap= qr.item_name || qr.container_name || qr.storage_name
+          td.px-6.py-4.whitespace-nowrap
+            span(class=`px-2 py-1 rounded-full text-xs ${
+              qr.status === 'available' ? 'bg-green-100 text-green-800' :
+              qr.status === 'in_use' ? 'bg-blue-100 text-blue-800' :
+              qr.status === 'checked_out' ? 'bg-yellow-100 text-yellow-800' :
+              'bg-gray-100 text-gray-800'
+            }`)= qr.status
+          td.px-6.py-4.whitespace-nowrap= new Date(qr.assigned_at).toLocaleDateString()
+          td.px-6.py-4.whitespace-nowrap
+            a(href=`/qr/${qr.uuid}` class="text-blue-600 hover:text-blue-800") View

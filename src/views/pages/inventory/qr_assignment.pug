@@ -1,0 +1,59 @@
+extends ../../layouts/inventory_layout
+include ../../mixins/forms/qrs/qr_assignment_forms
+include ../../mixins/modals/qrs/qr_assignment_modals
+
+block content
+  div(class="max-w-4xl mx-auto")
+    h1(class="text-2xl font-bold mb-6") Assign QR Code: #{qrCode.uuid}
+    
+    div(class="bg-white rounded-lg shadow-lg p-6")
+      //- Assignment Type Selection
+      div(class="mb-6")
+        label(class="block text-gray-700 font-bold mb-2") Select Assignment Type
+        select#assignmentType(class="w-full p-2 border rounded" onchange="handleTypeChange()")
+          option(value="") Select type...
+          option(value="item") Item
+          option(value="container") Container
+          option(value="storage") Storage
+
+      //- Search Section
+      div#searchSection(class="mb-6 hidden")
+        div(class="flex gap-4")
+          div(class="flex-1")
+            input#searchInput(
+              type="text" 
+              class="w-full p-2 border rounded" 
+              placeholder="Search existing..."
+              oninput="handleSearch()"
+            )
+          button#createNewBtn(
+            onclick="showCreateModal()" 
+            class="bg-green-600 text-white px-4 py-2 rounded"
+          ) Create New
+
+      //- Search Results
+      div#searchResults(class="mb-6")
+
+      //- Assignment Form
+      form#assignmentForm(
+        class="hidden"
+        onsubmit="handleAssignment(event)"
+      )
+        input#selectedId(type="hidden")
+        input#selectedType(type="hidden")
+        input(type="hidden" name="qr_uuid" value=qrCode.uuid)
+        div(class="mb-4")
+          p(class="font-bold") Selected:
+          p#selectedDisplay(class="text-gray-600")
+        
+        button(
+          type="submit"
+          class="bg-blue-600 text-white px-4 py-2 rounded"
+        ) Assign QR Code
+
+    +itemModal()
+    +containerModal()
+    +storageModal()
+
+block scripts
+  script(src="/js/qr_assignment.js")

@@ -1,0 +1,44 @@
+extends ../../layouts/inventory_layout
+
+block content
+  div(class="container mx-auto px-4 py-8")
+    div(class="bg-white rounded-lg shadow-lg p-6")
+      //- Header
+      div(class="flex items-center mb-6")
+        h1(class="text-2xl font-bold text-orange-900")= container.name
+        span(class="ml-4 px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm") Container
+
+      //- Details
+      div(class="grid grid-cols-1 md:grid-cols-2 gap-6")
+        //- Basic Info
+        div
+          h2(class="text-lg font-semibold mb-3") Details
+          div(class="space-y-2")
+            p
+              span(class="font-medium") Description: 
+              span(class="text-gray-600")= container.description || 'No description'
+            p
+              span(class="font-medium") Location: 
+              span(class="text-gray-600")= container.storage_name || container.room_name || 'Unassigned'
+
+        //- Stats
+        div
+          h2(class="text-lg font-semibold mb-3") Statistics
+          div(class="bg-orange-50 rounded p-4")
+            p(class="text-lg") 
+              span(class="font-medium") Total Items: 
+              span(class="text-orange-600")= items ? items.length : 0
+
+      //- Items List
+      if items && items.length > 0
+        div(class="mt-8")
+          h2(class="text-xl font-bold text-orange-900 mb-4") Contained Items
+          div(class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4")
+            each item in items
+              div(class="bg-white border rounded-lg p-4 shadow-sm")
+                h3(class="font-semibold")= item.name
+                p(class="text-sm text-gray-600")= `${item.quantity} ${item.unit}`
+                a(href=`/items/${item.id}` class="text-blue-600 hover:text-blue-800 text-sm") View Details
+
+block scripts
+  script(src="/js/container_handlers.js")

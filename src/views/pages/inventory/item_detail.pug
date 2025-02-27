@@ -1,0 +1,22 @@
+extends ../../layouts/inventory_layout
+include ../../mixins/modals/items/item_modals
+include ../../mixins/modals/items/note_modal
+include ../../pages/inventory/item_notes
+include ../../mixins/items/item_location
+
+block content
+  //- Item Details Section
+
+  +itemNotes(item, itemNotes)
+  +itemDetails(item)
+  +noteModal(item.id)
+  +editNoteModal(item.id)
+  //-pre(class="bg-gray-100 p-4 mt-4")= JSON.stringify(item, null, 2)
+
+block scripts
+  script(src="https://cdn.ckeditor.com/ckeditor5/35.0.1/classic/ckeditor.js")
+  script(src="/js/item_handlers.js") 
+  script(src="/js/note_handlers.js") 
+//-  
+  script.
+      console.log('Item data:', !{JSON.stringify(item)});

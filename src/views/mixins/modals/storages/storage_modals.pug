@@ -1,0 +1,39 @@
+mixin editStorageModal(storage, rooms)
+  div(id=`editStorage-${storage.id}` class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center")
+    div(class="bg-white rounded-lg p-6 w-full max-w-md")
+      h2(class="text-xl font-bold text-orange-900 mb-4") Edit Storage
+      form(action=`/storage/${storage.id}?_method=PUT` method="POST")
+        div(class="mb-4")
+          label(class="block text-gray-700 text-sm font-bold mb-2") Name
+          input(type="text" name="name" value=storage.name required
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700")
+        
+        div(class="mb-4")
+          label(class="block text-gray-700 text-sm font-bold mb-2") Description
+          textarea(name="description" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700")
+            = storage.description
+        
+        div(class="mb-4")
+          label(class="block text-gray-700 text-sm font-bold mb-2") Room
+          select(name="room_id" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700")
+            option(value="") -- Select Room --
+            each room in rooms
+              option(value=room.id selected=storage.room_id === room.id)= room.name
+        
+        div(class="flex justify-end space-x-3")
+          button(type="button" onclick=`toggleStorageModal('editStorage-${storage.id}')` 
+            class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded") Cancel
+          button(type="submit" 
+            class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded") Save
+
+mixin deleteStorageModal(storage)
+  div(id=`deleteStorage-${storage.id}` class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center")
+    div(class="bg-white rounded-lg p-6 w-full max-w-md")
+      h2(class="text-xl font-bold mb-4") Delete Storage
+      p(class="mb-4") Are you sure you want to delete "#{storage.name}"?
+      form(action=`/storage/${storage.id}?_method=DELETE` method="POST")
+        div(class="flex justify-end space-x-3")
+          button(type="button" onclick=`toggleStorageModal('deleteStorage-${storage.id}')` 
+            class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded") Cancel
+          button(type="submit" 
+            class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded") Delete

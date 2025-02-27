@@ -1,0 +1,89 @@
+extends ../../layouts/inventory_layout
+include ../../mixins/tables/qrs/qrs_tables
+include ../../mixins/forms/qrs/qrs_forms
+include ../../mixins/modals/qrs/qrs_modals
+
+block content
+  //- Stats Overview
+  div(class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8")
+    div(class="bg-blue-50 rounded-lg shadow p-6")
+      h3(class="text-blue-900 text-lg font-semibold") Total QR Codes
+      p(class="text-3xl font-bold text-blue-600")= stats.total_qrs
+
+    div(class="bg-green-50 rounded-lg shadow p-6")
+      h3(class="text-green-900 text-lg font-semibold") Assigned QR Codes
+      p(class="text-3xl font-bold text-green-600")= stats.assigned_qrs
+
+    div(class="bg-orange-50 rounded-lg shadow p-6")
+      h3(class="text-orange-900 text-lg font-semibold") Available QR Codes
+      p(class="text-3xl font-bold text-orange-600")= stats.unassigned_qrs
+
+  //- Generate QR Section
+  div(class="bg-white rounded-lg shadow-lg p-6 mb-8")
+    h2(class="text-2xl font-bold mb-4") Generate New QR Codes
+    div(class="flex space-x-4 mb-4")
+        button(onclick="generateQRBatch(48)" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700") Generate 48 QR Codes
+        button(onclick="generateQRBatch(80)" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700") Generate 80 QR Codes
+    
+    //- Results section for copying
+    div(id="qrResults" class="hidden mt-4")
+        h3(class="text-lg font-semibold mb-2") Generated QR Codes
+        div(class="bg-gray-50 p-4 rounded")
+        pre(id="qrList" class="whitespace-pre-wrap")
+        button(onclick="copyToClipboard()" class="mt-2 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700") Copy to Clipboard
+
+  //- Assigned QRs List
+  div(class="bg-white rounded-lg shadow-lg p-6")
+    h2(class="text-2xl font-bold mb-4") Assigned QR Codes
+    +qrsTable(assignedQRs)
+
+block scripts
+  script.
+    async function generateQRBatch(quantity) {
+        try {
+        const response = await fetch('/qrs/generate-batch', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ quantity })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            // Format UUIDs for display
+            const formattedUUIDs = data.data.map(qr => qr.uuid).join('\n');
+            document.getElementById('qrList').textContent = formattedUUIDs;
+            document.getElementById('qrResults').classList.remove('hidden');
+        }
+        } catch (error) {
+        console.error('Error generating QR codes:', error);
+        alert('Failed to generate QR codes');
+        }
+    }
+
+    function copyToClipboard() {
+        const qrList = document.getElementById('qrList');
+        navigator.clipboard.writeText(qrList.textContent)
+        .then(() => alert('QR codes copied to clipboard!'))
+        .catch(err => console.error('Failed to copy:', err));
+    }
+
+    async function generateQR() {
+      try {
+        const response = await fetch('/qrs/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        const data = await response.json();
+        if (data.success) {
+          alert('QR Code generated successfully!');
+          window.location.reload();
+        }
+      } catch (error) {
+        console.error('Error generating QR:', error);
+        alert('Failed to generate QR code');
+      }
+    }

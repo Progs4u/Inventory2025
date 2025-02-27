@@ -1,0 +1,32 @@
+mixin editRoomModal(room)
+  div(id=`editModal-${room.id}` class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center")
+    div(class="bg-white rounded-lg p-6 w-full max-w-md")
+      h2(class="text-xl font-bold mb-4") Edit Room
+      form(action=`/rooms/${room.id}?_method=PUT` method="POST")
+        div(class="mb-4")
+          label(class="block text-gray-700 text-sm font-bold mb-2") Name
+          input(type="text" name="name" value=room.name 
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700")
+        
+        div(class="mb-4")
+          label(class="block text-gray-700 text-sm font-bold mb-2") Description
+          textarea(name="description" 
+            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700")= room.description
+        
+        div(class="flex justify-end space-x-3 mt-6")
+          button(type="button" onclick=`toggleRoomModal('editModal-${room.id}')` 
+            class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded") Cancel
+          button(type="submit" 
+            class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded") Save Changes
+
+mixin deleteRoomModal(room)
+  div(id=`deleteModal-${room.id}` class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center")
+    div(class="bg-white rounded-lg p-6 w-full max-w-md")
+      h2(class="text-xl font-bold mb-4") Delete Room
+      p(class="mb-4") Are you sure you want to delete "#{room.name}"?
+      form(action=`/rooms/${room.id}?_method=DELETE` method="POST")
+        div(class="flex justify-end space-x-3")
+          button(type="button" onclick=`toggleRoomModal('deleteModal-${room.id}')` 
+            class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded") Cancel
+          button(type="submit" 
+            class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded") Delete

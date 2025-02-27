@@ -1,0 +1,57 @@
+extends ../../layouts/inventory_layout
+include ../../mixins/forms/items/item_forms
+include ../../mixins/modals/items/item_modals
+include ../../mixins/tables/items/item_tables
+
+block content
+  div(class="bg-white rounded-lg shadow-lg p-6 mb-8")
+    div(class="flex justify-between items-center mb-6")
+      h1(class="text-2xl font-bold text-orange-900") Items
+      button(onclick="toggleItemModal('addItem')" 
+        class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700") Add Item
+
+    //- Items Table
+    table(class="min-w-full divide-y divide-gray-200")
+      thead(class="bg-gray-50")
+        tr
+          th(class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase") Name
+          th(class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase") Category
+          th(class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase") Location
+          th(class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase") Actions
+      tbody(class="bg-white divide-y divide-gray-200")
+        each item in items || []
+          tr
+            td(class="px-6 py-4 whitespace-nowrap")= item.name
+            td(class="px-6 py-4 whitespace-nowrap")= item.category
+            td(class="px-6 py-4 whitespace-nowrap")
+              if item.container_name
+                span= `Container: ${item.container_name}`
+              else if item.storage_name
+                span= `Storage: ${item.storage_name}`
+              else
+                span= `Room: ${item.room_name}`
+            td(class="px-6 py-4 whitespace-nowrap")
+              button(onclick=`toggleItemModal('editItem-${item.id}')` 
+                class="text-blue-600 hover:text-blue-900 mr-4") Edit
+              button(onclick=`toggleItemModal('deleteItem-${item.id}')`
+                class="text-red-600 hover:text-red-900") Delete
+  //- Add Item Modal
+  div(id="addItem" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center")
+    div(class="bg-white rounded-lg p-6 w-full max-w-md")
+      h2(class="text-xl font-bold text-orange-900 mb-4") Add Item
+      //- Pass the correct modalId to both the form and the cancel button
+      +itemForm("/items", "POST", {}, rooms, storages, containers, 'addItem')
+  //- Edit Item Modals
+  each item in items || []
+    div(id=`editItem-${item.id}` class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center")
+      div(class="bg-white rounded-lg p-6 w-full max-w-md")
+        h2(class="text-xl font-bold text-orange-900 mb-4") Edit Item
+        +itemForm(`/items/${item.id}?_method=PUT`, "POST", item, rooms, storages, containers, `editItem-${item.id}`)
+
+
+  //- Delete Item Modals
+  each item in items || []
+    +deleteItemModal(item)
+
+block scripts
+  script(src="/js/item_handlers.js")

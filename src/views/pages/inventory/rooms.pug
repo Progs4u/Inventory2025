@@ -1,0 +1,49 @@
+extends ../../layouts/inventory_layout
+include ../../mixins/forms/rooms/room_forms
+include ../../mixins/modals/rooms/room_modals
+include ../../mixins/tables/rooms/room_tables
+
+block content
+  div(class="bg-white rounded-lg shadow-lg p-6 mb-8")
+    div(class="flex justify-between items-center mb-6")
+      h1(class="text-2xl font-bold text-orange-900") Rooms
+      button(onclick="toggleRoomModal('addRoom')" 
+        class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700") Add Room
+
+    if rooms && rooms.length
+      table(class="min-w-full divide-y divide-gray-200")
+        thead(class="bg-gray-50")
+          tr
+            th(class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider") Name
+            th(class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider") Description
+            th(class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider") Items Count
+            th(class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider") Actions
+        tbody(class="bg-white divide-y divide-gray-200")
+          each room in rooms
+            tr
+              td(class="px-6 py-4 whitespace-nowrap")= room.name
+              td(class="px-6 py-4")= room.description
+              td(class="px-6 py-4")= room.items_count
+              td(class="px-6 py-4 whitespace-nowrap")
+                button(onclick=`toggleRoomModal('editModal-${room.id}')` 
+                  class="text-blue-600 hover:text-blue-900 mr-4") Edit
+                button(onclick=`toggleRoomModal('deleteModal-${room.id}')` 
+                  class="text-red-600 hover:text-red-900") Delete
+        
+            //- Add modals for each room
+            +editRoomModal(room)
+    else
+      p(class="text-gray-500 text-center py-4") No rooms added yet.
+
+  //- Add Room Modal
+  div(id="addRoom" class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center")
+    div(class="bg-white rounded-lg p-6 w-full max-w-md")
+      h2(class="text-xl font-bold text-orange-900 mb-4") Add New Room
+      +roomForm("/rooms", "POST")
+
+  //- Add Delete Modals
+  each room in rooms || []
+    +deleteRoomModal(room)
+
+block scripts
+  script(src="/js/room_handlers.js")

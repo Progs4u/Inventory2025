@@ -1,0 +1,67 @@
+mixin itemForm(action, method, item = {}, rooms = [], storages = [], containers = [], modalId, qrUuid)
+  form(id="form-addItem" action=action method=method class="space-y-4")
+  
+    div
+      label(class="block text-sm font-medium text-gray-700") Item Name
+      input(type="text" name="name" value=item.name required
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500")
+    
+    //- Category field
+    div
+      label(class="block text-sm font-medium text-gray-700") Category
+      select(name="category" class="mt-1 block w-full" required)
+        each category in ['electronics', '3d_printing', 'painting', 'cleaning', 'building_materials', 'other']
+          option(value=category selected=item.category === category)= category.replace('_', ' ')
+
+    //- Location Type Selection
+    div
+      label(class="block text-sm font-medium text-gray-700") Location Type
+      select(name="location_type" class="mt-1 block w-full" onchange=`updateItemLocationOptions(this.value, '${modalId}')`)
+        option(value="room" selected=initialLocationType === 'room') Room
+        option(value="storage" selected=initialLocationType === 'storage') Storage
+        option(value="container" selected=initialLocationType === 'container') Container
+
+    //- Room Selection
+    div(id=`${modalId}-roomSelect` class=initialLocationType === 'room' ? '' : 'hidden')
+      label(class="block text-sm font-medium text-gray-700") Room
+      select(name="room_id" class="mt-1 block w-full" required)
+        option(value="") -- Select Room --
+        each room in rooms || []
+          option(value=room.id selected=item.room_id === room.id)= room.name
+
+    //- Storage Selection
+    div(id=`${modalId}-storageSelect` class=initialLocationType === 'storage' ? '' : 'hidden')
+      label(class="block text-sm font-medium text-gray-700") Storage
+      select(name="storage_id" class="mt-1 block w-full" required)
+        option(value="") -- Select Storage --
+        each storage in storages || []
+          option(value=storage.id selected=item.storage_id === storage.id)= storage.name
+
+    //- Container Selection
+    div(id=`${modalId}-containerSelect` class=initialLocationType === 'container' ? '' : 'hidden')
+      label(class="block text-sm font-medium text-gray-700") Container
+      select(name="container_id" class="mt-1 block w-full" required)
+        option(value="") -- Select Container --
+        each container in containers || []
+          option(value=container.id selected=item.container_id === container.id)= container.name
+
+    //- Quantity and Unit
+    div(class="flex space-x-4")
+      div(class="flex-1")
+        label(class="block text-sm font-medium text-gray-700") Amount
+        input(type="number" name="quantity" value=item.quantity || 1 min="0" step="0.01"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm")
+      
+      div(class="flex-1")
+        label(class="block text-sm font-medium text-gray-700") Unit
+        select(name="unit" class="mt-1 block w-full")
+          option(value="pieces" selected=item.unit === 'pieces') Pieces
+          option(value="grams" selected=item.unit === 'grams') Grams
+          option(value="meters" selected=item.unit === 'meters') Meters
+
+    //- Form Actions
+    div(class="flex justify-end space-x-3")
+      button(type="button" onclick=`toggleItemModal('${modalId}')` 
+        class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded") Cancel    
+      button(type="submit" 
+        class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700") Save

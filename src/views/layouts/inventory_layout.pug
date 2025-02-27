@@ -1,0 +1,26 @@
+doctype html
+html
+  head
+    title Inventory Management
+    link(rel="stylesheet", href="/output.css")
+    script(src="https://kit.fontawesome.com/e5f30cc71f.js", crossorigin="anonymous")
+  body(class="min-h-screen bg-orange-50")
+    nav(class="bg-orange-800 shadow-lg")
+      div(class="container mx-auto px-6 py-4")
+        div(class="flex justify-between items-center")
+          div(class="flex space-x-6")
+            a(href="/" class="text-xl font-bold text-white") Inventory
+            a(href="/rooms" class="text-orange-200 hover:text-white transition-colors") Rooms
+            a(href="/storage" class="text-orange-200 hover:text-white transition-colors") Storage
+            a(href="/containers" class="text-orange-200 hover:text-white transition-colors") Containers
+            a(href="/items" class="text-orange-200 hover:text-white transition-colors") Items
+            a(href="/qrs" class="text-orange-200 hover:text-white transition-colors") QRs
+
+    main(class="container mx-auto px-6 py-8")
+      if error
+        div(class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4")
+          p= error
+      block content
+
+  block scripts
+    script(src="/storage.js")

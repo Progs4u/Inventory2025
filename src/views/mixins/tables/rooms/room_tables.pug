@@ -1,0 +1,19 @@
+mixin roomsTable(locations)
+  table(class="min-w-full divide-y divide-orange-200")
+    thead(class="bg-orange-50")
+      tr
+        th(class="px-6 py-3 text-left text-xs font-medium text-orange-500 uppercase tracking-wider") Name
+        th(class="px-6 py-3 text-left text-xs font-medium text-orange-500 uppercase tracking-wider") Type
+        th(class="px-6 py-3 text-left text-xs font-medium text-orange-500 uppercase tracking-wider") Items Count
+        th(class="px-6 py-3 text-left text-xs font-medium text-orange-500 uppercase tracking-wider") Actions
+    tbody(class="bg-white divide-y divide-orange-200")
+      each location in locations
+        tr
+          td(class="px-6 py-4 whitespace-nowrap")= location.name
+          td(class="px-6 py-4 whitespace-nowrap")= location.type
+          td(class="px-6 py-4 whitespace-nowrap")= location.items_count
+          td(class="px-6 py-4 whitespace-nowrap")
+            button(onclick=`toggleRoomModal('editLocation-${location.id}')` 
+              class="text-blue-600 hover:text-blue-900 mr-4") Edit
+            button(onclick=`toggleRoomModal('deleteLocation-${location.id}')`
+              class="ml-4 text-red-600 hover:text-red-900") Delete

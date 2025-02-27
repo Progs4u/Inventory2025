@@ -1,0 +1,15 @@
+mixin roomForm(action, method, room = {})
+  form(action=action method=method class="space-y-4")
+    div
+      label(class="block text-sm font-medium text-gray-700") Room Name
+      input(type="text" name="name" value=room.name 
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500")
+    
+    div
+      label(class="block text-sm font-medium text-gray-700") Description
+      textarea(name="description" 
+        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500")
+        = room.description
+    
+    button(type="submit" 
+      class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700") Save
