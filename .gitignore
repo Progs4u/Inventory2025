@@ -12,3 +12,6 @@ screenlog.0
 
 # Env file
 .env
+
+# Upload files
+src/public/uploads
